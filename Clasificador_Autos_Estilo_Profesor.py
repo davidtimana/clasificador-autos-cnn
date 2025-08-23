@@ -1,0 +1,281 @@
+# -*- coding: utf-8 -*-
+"""
+Clasificador de Autos CNN - Estilo Profesor
+Basado en los ejemplos de clase: 5_imágenes_con_cnn.py y 6_redes_neuronales_aplicadas_a_imagenes.py
+Autor: David Timana | Curso: Visión por Computador
+"""
+
+import tensorflow as tf
+import tensorflow_datasets as tfds
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.utils import to_categorical
+
+print("🚗 CLASIFICADOR DE AUTOS CNN - ESTILO PROFESOR")
+print("=" * 50)
+
+# =============================================================================
+# 1. CARGAR DATASET CIFAR-10
+# =============================================================================
+print("\n1. Cargando dataset CIFAR-10...")
+
+# Cargar CIFAR-10
+dataset = tfds.load('cifar10', split=['train', 'test'], as_supervised=True)
+train_dataset, test_dataset = dataset[0], dataset[1]
+
+# Convertir a numpy arrays
+x_train, y_train = [], []
+x_test, y_test = [], []
+
+for image, label in train_dataset:
+    x_train.append(image.numpy())
+    y_train.append(label.numpy())
+
+for image, label in test_dataset:
+    x_test.append(image.numpy())
+    y_test.append(label.numpy())
+
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+x_test = np.array(x_test)
+y_test = np.array(y_test)
+
+print(f"✅ Dataset cargado:")
+print(f"   📊 Entrenamiento: {x_train.shape[0]:,} imágenes")
+print(f"   📊 Prueba: {x_test.shape[0]:,} imágenes")
+print(f"   🖼️  Tamaño: {x_train.shape[1]}x{x_train.shape[2]}x{x_train.shape[3]}")
+print(f"   🏷️  Clases: 10")
+
+# Mostrar clases disponibles
+class_names = ['avión', 'automóvil', 'pájaro', 'gato', 'ciervo', 'perro', 'rana', 'caballo', 'barco', 'camión']
+print(f"   📝 Clases: {class_names}")
+print(f"   🚗 Automóviles: clase 1")
+
+# =============================================================================
+# 2. PREPROCESAR DATOS
+# =============================================================================
+print("\n2. Preprocesando datos...")
+
+# Normalizar imágenes (0-1)
+x_train = x_train.astype('float32') / 255.0
+x_test = x_test.astype('float32') / 255.0
+
+# Convertir etiquetas a one-hot encoding
+y_train = to_categorical(y_train, 10)
+y_test = to_categorical(y_test, 10)
+
+print(f"✅ Datos preprocesados:")
+print(f"   📊 x_train shape: {x_train.shape}")
+print(f"   📊 y_train shape: {y_train.shape}")
+print(f"   📊 x_test shape: {x_test.shape}")
+print(f"   📊 y_test shape: {y_test.shape}")
+
+# =============================================================================
+# 3. CONSTRUIR MODELO CNN
+# =============================================================================
+print("\n3. Construyendo modelo CNN...")
+
+model = Sequential([
+    # Primera capa convolucional
+    Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(32, 32, 3)),
+    MaxPooling2D(pool_size=(2, 2)),
+    
+    # Segunda capa convolucional
+    Conv2D(64, kernel_size=(3, 3), activation='relu'),
+    MaxPooling2D(pool_size=(2, 2)),
+    
+    # Tercera capa convolucional
+    Conv2D(128, kernel_size=(3, 3), activation='relu'),
+    MaxPooling2D(pool_size=(2, 2)),
+    
+    # Aplanar
+    Flatten(),
+    
+    # Capas densas
+    Dense(256, activation='relu'),
+    Dropout(0.5),
+    Dense(128, activation='relu'),
+    Dropout(0.3),
+    Dense(10, activation='softmax')
+])
+
+print("✅ Modelo creado:")
+model.summary()
+
+# =============================================================================
+# 4. COMPILAR Y ENTRENAR MODELO
+# =============================================================================
+print("\n4. Compilando y entrenando modelo...")
+
+# Compilar modelo
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Entrenar modelo
+print("🚀 Iniciando entrenamiento...")
+history = model.fit(
+    x_train, y_train,
+    validation_data=(x_test, y_test),
+    epochs=10,
+    batch_size=64,
+    verbose=1
+)
+
+# =============================================================================
+# 5. EVALUAR MODELO
+# =============================================================================
+print("\n5. Evaluando modelo...")
+
+# Evaluar en conjunto de prueba
+score = model.evaluate(x_test, y_test, verbose=0)
+print(f"📈 Resultados:")
+print(f"   📉 Test loss: {score[0]:.4f}")
+print(f"   ✅ Test accuracy: {score[1]:.4f}")
+
+# =============================================================================
+# 6. VISUALIZAR RESULTADOS
+# =============================================================================
+print("\n6. Visualizando resultados...")
+
+# Gráfico de precisión
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Entrenamiento')
+plt.plot(history.history['val_accuracy'], label='Validación')
+plt.title('Precisión del Modelo')
+plt.xlabel('Época')
+plt.ylabel('Precisión')
+plt.legend()
+plt.grid(True)
+
+# Gráfico de pérdida
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Entrenamiento')
+plt.plot(history.history['val_loss'], label='Validación')
+plt.title('Pérdida del Modelo')
+plt.xlabel('Época')
+plt.ylabel('Pérdida')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# =============================================================================
+# 7. PREDICCIONES EN IMÁGENES ESPECÍFICAS
+# =============================================================================
+print("\n7. Predicciones en imágenes específicas...")
+
+# Seleccionar algunas imágenes de prueba
+n = 5  # Índice de imagen a probar
+im1 = x_test[n:n+1]  # Tomar una imagen
+
+# Mostrar imagen
+plt.figure(figsize=(6, 3))
+plt.subplot(1, 2, 1)
+plt.imshow(x_test[n])
+plt.title(f'Imagen de prueba (Clase real: {np.argmax(y_test[n])})')
+plt.axis('off')
+
+# Hacer predicción
+Yprod = model.predict(im1)
+predicted_class = np.argmax(Yprod[0])
+confidence = np.max(Yprod[0])
+
+print(f"📊 Predicción:")
+print(f"   🖼️  Imagen: {n}")
+print(f"   🎯 Clase predicha: {predicted_class} ({class_names[predicted_class]})")
+print(f"   📈 Confianza: {confidence:.4f}")
+print(f"   ✅ Clase real: {np.argmax(y_test[n])} ({class_names[np.argmax(y_test[n])]})")
+
+# Mostrar probabilidades
+plt.subplot(1, 2, 2)
+plt.bar(range(10), Yprod[0])
+plt.title('Probabilidades por Clase')
+plt.xlabel('Clase')
+plt.ylabel('Probabilidad')
+plt.xticks(range(10), [f'{i}\n{name[:3]}' for i, name in enumerate(class_names)], fontsize=8)
+
+plt.tight_layout()
+plt.show()
+
+# =============================================================================
+# 8. ANÁLISIS DE CLASE ESPECÍFICA (AUTOMÓVILES)
+# =============================================================================
+print("\n8. Análisis específico de automóviles...")
+
+# Filtrar solo automóviles (clase 1)
+car_indices = np.where(np.argmax(y_test, axis=1) == 1)[0]
+car_images = x_test[car_indices]
+car_labels = y_test[car_indices]
+
+print(f"🚗 Automóviles en conjunto de prueba: {len(car_indices)}")
+
+# Evaluar precisión específica en automóviles
+car_predictions = model.predict(car_images)
+car_accuracy = np.mean(np.argmax(car_predictions, axis=1) == 1)
+print(f"✅ Precisión en automóviles: {car_accuracy:.4f}")
+
+# Mostrar algunos automóviles y sus predicciones
+plt.figure(figsize=(15, 5))
+for i in range(5):
+    plt.subplot(1, 5, i+1)
+    plt.imshow(car_images[i])
+    pred_class = np.argmax(car_predictions[i])
+    pred_conf = np.max(car_predictions[i])
+    plt.title(f'Pred: {pred_class}\nConf: {pred_conf:.2f}')
+    plt.axis('off')
+
+plt.suptitle('Predicciones en Automóviles', fontsize=16)
+plt.tight_layout()
+plt.show()
+
+# =============================================================================
+# 9. MATRIZ DE CONFUSIÓN SIMPLIFICADA
+# =============================================================================
+print("\n9. Matriz de confusión...")
+
+# Predicciones en todo el conjunto de prueba
+y_pred = model.predict(x_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true_classes = np.argmax(y_test, axis=1)
+
+# Contar aciertos por clase
+print("📊 Aciertos por clase:")
+for i, class_name in enumerate(class_names):
+    class_indices = np.where(y_true_classes == i)[0]
+    if len(class_indices) > 0:
+        class_accuracy = np.mean(y_pred_classes[class_indices] == i)
+        print(f"   {i:2d}. {class_name:10s}: {class_accuracy:.4f}")
+
+# =============================================================================
+# 10. GUARDAR MODELO
+# =============================================================================
+print("\n10. Guardando modelo...")
+
+model.save('modelo_autos_cnn.h5')
+print("✅ Modelo guardado como 'modelo_autos_cnn.h5'")
+
+# =============================================================================
+# RESUMEN FINAL
+# =============================================================================
+print("\n" + "=" * 50)
+print("🎉 ENTRENAMIENTO COMPLETADO")
+print("=" * 50)
+print(f"📊 Precisión final: {score[1]:.4f}")
+print(f"📉 Pérdida final: {score[0]:.4f}")
+print(f"🏷️  Clases: 10 (incluyendo automóviles)")
+print(f"🚗 Precisión en automóviles: {car_accuracy:.4f}")
+print(f"💾 Modelo guardado: modelo_autos_cnn.h5")
+
+print("\n🎯 El modelo puede clasificar:")
+for i, name in enumerate(class_names):
+    print(f"   {i}. {name}")
+
+print("\n✅ ¡Proyecto completado exitosamente!")

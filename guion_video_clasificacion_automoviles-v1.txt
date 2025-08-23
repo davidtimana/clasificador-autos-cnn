@@ -1,0 +1,115 @@
+GUION VIDEO - CLASIFICADOR DE AUTOMÓVILES CON REDES NEURONALES CONVOLUCIONALES
+================================================================================
+
+GRUPO 3 - ESPECIALIZACIÓN EN INTELIGENCIA ARTIFICIAL
+Universitaria Minuto de Dios - NRC 3664 Visión Por Computador - Semana 7
+
+INTEGRANTES:
+- David Stiven Benitez Guerra
+- Leonardo Adolfo Mina Roldan  
+- David Orlando Timana Leyton
+
+DURACIÓN: 5 minutos máximo
+FORMATO: Voz en off con presentación visual
+
+================================================================================
+
+INTRODUCCIÓN (30 segundos)
+--------------------------
+"Buenos días, somos el Grupo 3 de la Especialización en Inteligencia Artificial de la Universitaria Minuto de Dios. En este video presentaremos nuestro proyecto de clasificación de automóviles utilizando Redes Neuronales Convolucionales, desarrollado para la asignatura de Visión Por Computador.
+
+Nuestro objetivo fue implementar un sistema de clasificación de imágenes que pudiera identificar automóviles y otros objetos del dataset CIFAR-10, utilizando PyTorch como framework de deep learning."
+
+================================================================================
+
+ETAPA 1: DISEÑO (1 minuto 30 segundos)
+=======================================
+
+"En la etapa de diseño, comenzamos analizando el dataset CIFAR-10, desarrollado por Alex Krizhevsky, Vinod Nair y Geoffrey Hinton de la Universidad de Toronto. Este dataset contiene 60,000 imágenes de 32x32 píxeles en color, divididas en 10 clases diferentes.
+
+Para nuestro proyecto, nos enfocamos especialmente en la clase 'automóvil', que incluye sedanes, SUVs y vehículos similares, excluyendo camiones grandes y pickup trucks según la especificación del dataset.
+
+Diseñamos una arquitectura CNN con tres capas convolucionales principales:
+- Primera capa: 32 filtros de 3x3 con padding
+- Segunda capa: 64 filtros de 3x3 
+- Tercera capa: 128 filtros de 3x3
+
+Cada capa convolucional va seguida de MaxPooling para reducir dimensionalidad y activación ReLU para introducir no-linealidad. Finalmente, tres capas densas con dropout del 50% para prevenir overfitting.
+
+Los hiperparámetros seleccionados fueron cuidadosamente elegidos para optimizar el rendimiento:
+
+- Tamaño de batch: 64 - Un balance entre eficiencia computacional y estabilidad del entrenamiento, permitiendo actualizaciones de gradiente más estables que batches muy pequeños.
+
+- Learning rate: 0.001 - Una tasa de aprendizaje moderada que permite convergencia estable sin oscilaciones excesivas, típica para optimizadores Adam.
+
+- Épocas de entrenamiento: 10 - Suficientes para que el modelo aprenda patrones significativos sin caer en overfitting, monitoreando la convergencia.
+
+- Optimizador: Adam - Combina las ventajas de AdaGrad y RMSprop, con momentum adaptativo que acelera la convergencia en direcciones consistentes.
+
+- Función de pérdida: CrossEntropyLoss - Ideal para clasificación multiclase, combina softmax con negative log likelihood para entrenamiento estable.
+
+- Dropout: 50% - Técnica de regularización que previene overfitting al desactivar aleatoriamente neuronas durante el entrenamiento.
+
+- Tamaño de imagen: 32x32 píxeles - Resolución estándar de CIFAR-10 que mantiene información suficiente sin requerir excesiva capacidad computacional."
+
+================================================================================
+
+ETAPA 2: IMPLEMENTACIÓN (1 minuto 30 segundos)
+==============================================
+
+"Para la implementación, utilizamos PyTorch como framework principal, aprovechando su flexibilidad y eficiencia para deep learning. El desarrollo se realizó en Google Colab para aprovechar las GPUs disponibles y facilitar la colaboración del equipo.
+
+El proceso de implementación incluyó:
+
+Primero, la carga y preprocesamiento del dataset CIFAR-10, aplicando normalización con media 0.5 y desviación estándar 0.5 para cada canal RGB.
+
+Segundo, la implementación de la arquitectura CNN en PyTorch, definiendo la clase CNN que hereda de nn.Module, con el método forward que especifica el flujo de datos a través de las capas.
+
+Tercero, el entrenamiento del modelo durante 10 épocas, monitoreando la accuracy en tiempo real y guardando las métricas de rendimiento.
+
+Cuarto, la evaluación con un dataset personalizado de 100 imágenes descargadas de fuentes como Unsplash y Pixabay, incluyendo imágenes reales y sintéticas para probar la robustez del modelo.
+
+Finalmente, implementamos funciones de visualización para mostrar los resultados y guardamos el modelo entrenado en formato .pth para uso posterior."
+
+================================================================================
+
+ETAPA 3: RESULTADOS OBTENIDOS (1 minuto 30 segundos)
+====================================================
+
+"Los resultados obtenidos demuestran el éxito de nuestra implementación:
+
+En el dataset CIFAR-10, nuestro modelo alcanzó una accuracy del 74.62%, lo cual es satisfactorio para una arquitectura CNN básica sin técnicas avanzadas como transfer learning o data augmentation.
+
+En nuestro dataset personalizado de 100 imágenes, obtuvimos una accuracy del 29%, lo que revela un gap de rendimiento de 45.62% entre el dataset de entrenamiento y datos reales.
+
+El análisis por clase reveló resultados interesantes:
+- Automóviles: 100% accuracy (10/10 imágenes correctas)
+- Pájaros: 80% accuracy (4/5 imágenes reales correctas)  
+- Barcos: 80% accuracy (8/10 imágenes correctas)
+- Aviones: 40% accuracy (2/5 imágenes reales correctas)
+
+Las clases problemáticas como gato, perro, rana, caballo y camión tuvieron 0% accuracy, principalmente debido a la confusión con imágenes sintéticas y la falta de data augmentation.
+
+El modelo demostró excelente rendimiento en la clasificación de automóviles, confirmando que la arquitectura CNN es efectiva para este tipo de tareas. Sin embargo, el rendimiento en imágenes personalizadas sugiere la necesidad de técnicas adicionales como transfer learning y data augmentation para mejorar la generalización."
+
+================================================================================
+
+CONCLUSIÓN (30 segundos)
+------------------------
+"En conclusión, hemos implementado exitosamente un clasificador de automóviles usando Redes Neuronales Convolucionales con PyTorch. El proyecto demostró la efectividad de las CNNs para clasificación de imágenes, alcanzando 74.62% de accuracy en CIFAR-10 y destacando especialmente en la clasificación de automóviles con 100% de precisión.
+
+Los resultados obtenidos proporcionan una base sólida para futuras mejoras, incluyendo transfer learning, data augmentation y fine-tuning específico para clases problemáticas.
+
+Gracias por su atención."
+
+================================================================================
+
+NOTAS PARA LA PRODUCCIÓN:
+- Incluir capturas de pantalla del código PyTorch
+- Mostrar gráficos de accuracy durante entrenamiento
+- Visualizar ejemplos de predicciones correctas e incorrectas
+- Incluir diagrama de la arquitectura CNN
+- Mostrar ejemplos de imágenes del dataset CIFAR-10
+- Incluir tabla de resultados por clase
+- Agregar transiciones suaves entre secciones
+- Usar música de fondo sutil y profesional
