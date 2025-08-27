@@ -49,13 +49,13 @@ def set_seed(seed=42):
 
 # Hiperparámetros clave
 CONFIG = {
-    "batch_size": 32,
+    "batch_size": 64,       # Aumentado para un entrenamiento más estable
     "latent_dim": 100,
     "lr": 0.0002,
     "beta1": 0.5,
-    "epochs": 20, # Suficientes para ver resultados iniciales
+    "epochs": 50,           # Aumentado para mejor calidad de imagen
     "num_final_images": 30,
-    "image_size": 32,
+    "image_size": 64,       # Aumentado para imágenes más grandes
     "channels": 3
 }
 
@@ -101,28 +101,32 @@ def weights_init(m):
 class Generator(nn.Module):
     """
     Generador: Toma un vector latente (ruido) y lo transforma en una imagen.
-    Usa capas ConvTranspose2d para 'deconvolucionar' el ruido a una imagen de 32x32.
+    Usa capas ConvTranspose2d para 'deconvolucionar' el ruido a una imagen de 64x64.
     """
     def __init__(self, latent_dim, channels):
         super(Generator, self).__init__()
         self.main = nn.Sequential(
-            # Entrada: Vector latente (Z)
-            # Salida: (256, 4, 4)
-            nn.ConvTranspose2d(latent_dim, 256, 4, 1, 0, bias=False),
+            # Entrada: Vector latente (Z) -> Salida: (512, 4, 4)
+            nn.ConvTranspose2d(latent_dim, 512, 4, 1, 0, bias=False),
+            nn.BatchNorm2d(512),
+            nn.ReLU(True),
+
+            # Capa 2: (512, 4, 4) -> (256, 8, 8)
+            nn.ConvTranspose2d(512, 256, 4, 2, 1, bias=False),
             nn.BatchNorm2d(256),
             nn.ReLU(True),
 
-            # Capa 2: (256, 4, 4) -> (128, 8, 8)
+            # Capa 3: (256, 8, 8) -> (128, 16, 16)
             nn.ConvTranspose2d(256, 128, 4, 2, 1, bias=False),
             nn.BatchNorm2d(128),
             nn.ReLU(True),
 
-            # Capa 3: (128, 8, 8) -> (64, 16, 16)
+            # Capa 4: (128, 16, 16) -> (64, 32, 32)
             nn.ConvTranspose2d(128, 64, 4, 2, 1, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(True),
 
-            # Capa 4: (64, 16, 16) -> (channels, 32, 32)
+            # Capa 5: (64, 32, 32) -> (channels, 64, 64)
             nn.ConvTranspose2d(64, channels, 4, 2, 1, bias=False),
             nn.Tanh() # Normaliza la salida a [-1, 1]
         )
@@ -138,22 +142,27 @@ class Discriminator(nn.Module):
     def __init__(self, channels):
         super(Discriminator, self).__init__()
         self.main = nn.Sequential(
-            # Entrada: (channels, 32, 32)
+            # Entrada: (channels, 64, 64) -> (64, 32, 32)
             nn.Conv2d(channels, 64, 4, 2, 1, bias=False),
             nn.LeakyReLU(0.2, inplace=True),
 
-            # Capa 2: (64, 16, 16) -> (128, 8, 8)
+            # Capa 2: (64, 32, 32) -> (128, 16, 16)
             nn.Conv2d(64, 128, 4, 2, 1, bias=False),
             nn.BatchNorm2d(128),
             nn.LeakyReLU(0.2, inplace=True),
 
-            # Capa 3: (128, 8, 8) -> (256, 4, 4)
+            # Capa 3: (128, 16, 16) -> (256, 8, 8)
             nn.Conv2d(128, 256, 4, 2, 1, bias=False),
             nn.BatchNorm2d(256),
             nn.LeakyReLU(0.2, inplace=True),
 
-            # Capa 4: (256, 4, 4) -> (1, 1, 1) - Probabilidad final
-            nn.Conv2d(256, 1, 4, 1, 0, bias=False),
+            # Capa 4: (256, 8, 8) -> (512, 4, 4)
+            nn.Conv2d(256, 512, 4, 2, 1, bias=False),
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            # Capa 5: (512, 4, 4) -> (1, 1, 1) - Probabilidad final
+            nn.Conv2d(512, 1, 4, 1, 0, bias=False),
             nn.Sigmoid()
         )
 

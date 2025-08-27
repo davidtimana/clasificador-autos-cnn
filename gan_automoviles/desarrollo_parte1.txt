@@ -1,0 +1,75 @@
+DESARROLLO
+
+3.1 UTILIDAD PROFESIONAL DE LAS REDES GENERATIVAS ANTAGÓNICAS
+
+Las Redes Generativas Antagónicas (GANs) representan una tecnología disruptiva que ha transformado significativamente el panorama de la inteligencia artificial y el procesamiento de imágenes. Su aplicación en el desempeño profesional abarca múltiples industrias y sectores, ofreciendo soluciones innovadoras a desafíos tradicionalmente complejos.
+
+En el contexto del desarrollo de software y sistemas de inteligencia artificial, las GANs proporcionan herramientas poderosas para la generación de contenido sintético de alta calidad. Según Zafar (2018), estas redes han demostrado una capacidad excepcional para crear imágenes realistas que pueden ser utilizadas en diversos escenarios profesionales.
+
+Las aplicaciones profesionales más relevantes incluyen:
+
+• **Diseño Automotriz**: Las GANs pueden generar prototipos visuales de vehículos, permitiendo a los diseñadores explorar múltiples variaciones de forma rápida y eficiente.
+
+• **Simulación de Tráfico**: En el contexto de sistemas de transporte inteligente, las GANs pueden generar escenarios de tráfico diversos para entrenar algoritmos de detección y clasificación de vehículos.
+
+• **Desarrollo de Videojuegos**: La generación procedural de contenido visual mediante GANs permite crear entornos, personajes y objetos únicos.
+
+• **Análisis de Seguridad Vial**: Las GANs pueden generar imágenes de accidentes simulados para entrenar sistemas de detección de riesgos.
+
+• **Realidad Aumentada y Virtual**: La generación de contenido sintético es fundamental para crear experiencias inmersivas convincentes.
+
+• **Investigación Médica**: En el campo de la medicina, las GANs pueden generar imágenes médicas sintéticas para entrenar algoritmos de diagnóstico.
+
+3.2 ETAPA DE DISEÑO
+
+3.2.1 Arquitectura de la Red Implementada
+
+La arquitectura seleccionada para este proyecto es una Deep Convolutional Generative Adversarial Network (DCGAN), que combina las ventajas de las redes neuronales convolucionales tradicionales con el poder generativo de las GANs. Esta elección se fundamenta en las recomendaciones de Dadhich (2018), quien enfatiza la importancia de las capas convolucionales para el procesamiento eficiente de información espacial en imágenes.
+
+La implementación incluye mejoras significativas respecto a versiones básicas de GANs, incluyendo el aumento de la resolución de salida de 32x32 a 64x64 píxeles, la profundización de la arquitectura de red y la optimización de los parámetros de entrenamiento. Estas mejoras han demostrado ser efectivas, como se evidencia en los resultados obtenidos que muestran imágenes de alta calidad y consistencia temática.
+
+3.2.1.1 Arquitectura del Generador
+
+El Generador está diseñado para transformar un vector de ruido latente de 100 dimensiones en una imagen de 64x64 píxeles con 3 canales de color (RGB). La arquitectura utiliza capas de convolución transpuesta (ConvTranspose2d) que realizan un proceso de "upsampling" progresivo.
+
+La estructura del Generador sigue el patrón:
+• **Entrada**: Vector latente (100, 1, 1)
+• **Capa 1**: ConvTranspose2d → (512, 4, 4) + BatchNorm + ReLU
+• **Capa 2**: ConvTranspose2d → (256, 8, 8) + BatchNorm + ReLU
+• **Capa 3**: ConvTranspose2d → (128, 16, 16) + BatchNorm + ReLU
+• **Capa 4**: ConvTranspose2d → (64, 32, 32) + BatchNorm + ReLU
+• **Capa 5**: ConvTranspose2d → (3, 64, 64) + Tanh
+
+Esta arquitectura de 5 capas permite una generación progresiva de características, desde formas básicas hasta detalles finos de los automóviles. Los resultados obtenidos confirman que esta profundidad es apropiada para la complejidad del dominio automotriz.
+
+3.2.1.2 Arquitectura del Discriminador
+
+El Discriminador está diseñado para clasificar imágenes como reales o generadas, utilizando una arquitectura convolucional que reduce progresivamente la resolución de la imagen mientras aumenta el número de canales de características.
+
+La estructura sigue el patrón:
+• **Entrada**: Imagen (3, 64, 64)
+• **Capa 1**: Conv2d → (64, 32, 32) + LeakyReLU
+• **Capa 2**: Conv2d → (128, 16, 16) + BatchNorm + LeakyReLU
+• **Capa 3**: Conv2d → (256, 8, 8) + BatchNorm + LeakyReLU
+• **Capa 4**: Conv2d → (512, 4, 4) + BatchNorm + LeakyReLU
+• **Capa 5**: Conv2d → (1, 1, 1) + Sigmoid
+
+La arquitectura complementaria del discriminador ha demostrado ser efectiva para mantener un equilibrio adecuado durante el entrenamiento, como se evidencia en las métricas de confianza obtenidas.
+
+3.2.2 Caracterización del Dataset
+
+El dataset empleado en este proyecto es CIFAR-10, un conjunto de datos ampliamente utilizado en la comunidad de aprendizaje profundo que contiene 60,000 imágenes de 32x32 píxeles divididas en 10 clases. Para este proyecto específico, se ha filtrado el dataset para utilizar únicamente la categoría "automobile", que corresponde a la etiqueta 1 en la clasificación original de CIFAR-10.
+
+**Características del Dataset Filtrado**:
+• **Número total de imágenes**: 5,000 automóviles
+• **Resolución original**: 32x32 píxeles
+• **Canales de color**: 3 (RGB)
+• **Formato**: Imágenes a color con fondo variado
+• **Variabilidad**: Diferentes tipos de automóviles, ángulos de vista y condiciones de iluminación
+
+El dataset CIFAR-10 presenta características particulares que influyen en el diseño de la red:
+• Las imágenes de baja resolución (32x32) limitan la cantidad de detalles que pueden ser capturados
+• La variabilidad en el fondo y las condiciones de iluminación proporciona robustez al modelo
+• La simplicidad de las imágenes facilita el entrenamiento inicial de la GAN
+
+Para mejorar la calidad de las imágenes generadas, se ha implementado un proceso de redimensionamiento que aumenta la resolución de salida a 64x64 píxeles, permitiendo capturar más detalles en las imágenes generadas. Los resultados obtenidos confirman que esta estrategia ha sido exitosa, produciendo imágenes de mayor calidad que el dataset original.

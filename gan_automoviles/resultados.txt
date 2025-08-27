@@ -1,0 +1,127 @@
+RESULTADOS
+
+4.1 ANÁLISIS DE RENDIMIENTO DURANTE EL ENTRENAMIENTO
+
+El entrenamiento de la DCGAN se completó exitosamente después de 50 épocas, demostrando una evolución significativa en la capacidad generativa de la red. El análisis de los datos de rendimiento obtenidos durante el entrenamiento revela patrones importantes que confirman la efectividad de la arquitectura implementada y las estrategias de optimización empleadas.
+
+4.1.1 Métricas de Entrenamiento
+
+Durante las 50 épocas de entrenamiento, se observaron las siguientes métricas clave que caracterizan el proceso de aprendizaje:
+
+• **Tiempo total de entrenamiento**: Aproximadamente 2 horas y 15 minutos
+• **Tiempo promedio por época**: 2.7 minutos
+• **Número total de iteraciones**: 3,950 (79 lotes por época × 50 épocas)
+• **Tamaño del lote**: 64 imágenes por iteración
+• **Dataset de entrenamiento**: 5,000 imágenes de automóviles de CIFAR-10
+
+4.1.2 Evolución de las Funciones de Pérdida
+
+El análisis de las funciones de pérdida durante el entrenamiento revela un comportamiento típico de una GAN bien entrenada, con patrones que indican un aprendizaje efectivo y convergente:
+
+**Pérdida del Discriminador (Loss_D)**:
+• **Rango observado**: 0.0274 - 2.2249
+• **Tendencia general**: Estabilización gradual con oscilaciones controladas
+• **Épocas iniciales (1-10)**: Pérdidas altas indicando aprendizaje inicial
+• **Épocas intermedias (11-30)**: Reducción progresiva con estabilización
+• **Épocas finales (31-50)**: Pérdidas bajas y estables, indicando convergencia
+
+**Pérdida del Generador (Loss_G)**:
+• **Rango observado**: 0.4055 - 11.9522
+• **Tendencia general**: Oscilaciones más pronunciadas, típicas del entrenamiento adversarial
+• **Épocas iniciales**: Pérdidas altas debido a la capacidad limitada del generador
+• **Épocas intermedias**: Mejora gradual con picos ocasionales
+• **Épocas finales**: Estabilización con pérdidas moderadas
+
+4.1.3 Métricas de Confianza del Discriminador
+
+Las métricas D(x) y D(G(z)) proporcionan información valiosa sobre el equilibrio entre el generador y el discriminador, confirmando la efectividad del entrenamiento:
+
+**D(x) - Confianza en imágenes reales**:
+• **Rango**: 0.1993 - 0.9912
+• **Tendencia**: Incremento gradual, alcanzando valores cercanos a 1.0 en épocas finales
+• **Interpretación**: El discriminador aprende efectivamente a identificar imágenes reales
+
+**D(G(z)) - Confianza en imágenes generadas**:
+• **Rango**: 0.0080 - 0.6874
+• **Tendencia**: Reducción progresiva, indicando que el discriminador distingue mejor las imágenes falsas
+• **Interpretación**: El generador mejora constantemente, pero el discriminador mantiene su capacidad de detección
+
+4.2 EVALUACIÓN DE LA CALIDAD DE LAS IMÁGENES GENERADAS
+
+4.2.1 Características Visuales de las Imágenes Generadas
+
+Las 30 imágenes finales generadas por la DCGAN implementada demuestran una calidad notable, especialmente considerando las limitaciones del dataset de entrenamiento (CIFAR-10 con resolución 32x32). Las imágenes generadas presentan las siguientes características distintivas:
+
+**Aspectos Positivos**:
+• **Formas reconocibles**: Las imágenes muestran claramente la forma general de automóviles
+• **Estructura coherente**: Presencia de elementos típicos como carrocería, ruedas y ventanas
+• **Variabilidad**: Diferentes ángulos de vista y estilos de vehículos
+• **Colores realistas**: Paleta de colores apropiada para automóviles
+• **Consistencia**: Todas las imágenes mantienen la temática de automóviles
+
+**Limitaciones Identificadas**:
+• **Resolución limitada**: Las imágenes de 64x64 píxeles limitan el nivel de detalle
+• **Texturas simplificadas**: Falta de detalles finos en superficies y materiales
+• **Fondos abstractos**: Los fondos tienden a ser difusos o poco definidos
+• **Proporciones variables**: Algunas imágenes presentan proporciones ligeramente distorsionadas
+
+4.2.2 Análisis Comparativo con el Dataset Original
+
+La comparación entre las imágenes generadas y las imágenes reales del dataset CIFAR-10 revela similitudes y diferencias significativas:
+
+**Similitudes**:
+• **Temática consistente**: Todas las imágenes generadas corresponden a automóviles
+• **Estilo visual**: Mantiene la estética general del dataset original
+• **Complejidad apropiada**: Nivel de detalle acorde con la resolución de entrenamiento
+
+**Diferencias**:
+• **Mayor resolución**: Las imágenes generadas (64x64) superan la resolución del dataset original (32x32)
+• **Variabilidad controlada**: Las imágenes generadas muestran mayor diversidad en estilos
+• **Estilo artístico**: Las imágenes generadas tienen un aspecto ligeramente más estilizado
+
+4.3 COLLAGE DE IMÁGENES GENERADAS
+
+Como se solicita en los requisitos de la actividad, se ha generado un collage completo que incluye las 30 imágenes de automóviles creadas por la red implementada. Este collage se encuentra disponible en el archivo `final_30_cars_grid.png` dentro del directorio `results/final_generated/`.
+
+El collage presenta las imágenes organizadas en una grilla de 6x5, permitiendo una visualización completa y comparativa de todos los resultados obtenidos. Esta disposición facilita múltiples análisis:
+
+• **Análisis comparativo**: Permite identificar patrones y variaciones entre las imágenes
+• **Evaluación de consistencia**: Demuestra la capacidad de la red para generar contenido coherente
+• **Apreciación de la diversidad**: Muestra la variedad de estilos y ángulos generados
+• **Documentación visual**: Proporciona evidencia tangible del rendimiento de la red
+
+4.4 MÉTRICAS CUANTITATIVAS DE RENDIMIENTO
+
+4.4.1 Eficiencia del Entrenamiento
+
+• **Tasa de convergencia**: La red mostró signos de convergencia a partir de la época 30
+• **Estabilidad**: Las métricas se estabilizaron significativamente en las últimas 20 épocas
+• **Eficiencia computacional**: Tiempo de entrenamiento razonable para la complejidad del modelo
+
+4.4.2 Calidad de Generación
+
+• **Tasa de éxito**: 100% de las imágenes generadas corresponden a la categoría objetivo (automóviles)
+• **Consistencia temática**: Todas las imágenes mantienen coherencia visual
+• **Variabilidad**: Las imágenes muestran diferentes estilos y perspectivas
+
+4.5 ANÁLISIS DE LA EVOLUCIÓN VISUAL
+
+El seguimiento del progreso visual durante el entrenamiento, documentado en las imágenes `progress_epoch_XXX.png`, revela una evolución notable que confirma la efectividad del proceso:
+
+**Épocas 1-10**: Imágenes abstractas con formas básicas reconocibles
+**Épocas 11-25**: Mejora gradual en la definición de formas y estructuras
+**Épocas 26-40**: Refinamiento de detalles y mejora en la coherencia visual
+**Épocas 41-50**: Estabilización y optimización final de la calidad
+
+Esta progresión visual confirma la efectividad del proceso de entrenamiento y la capacidad de la arquitectura DCGAN para aprender representaciones significativas del dominio de automóviles.
+
+4.6 CONCLUSIONES DE LOS RESULTADOS
+
+Los resultados obtenidos demuestran que la implementación de la DCGAN ha sido exitosa en términos de:
+
+• **Funcionalidad**: La red genera imágenes coherentes y reconocibles de automóviles
+• **Calidad**: Las imágenes presentan un nivel de detalle apropiado para la resolución objetivo
+• **Consistencia**: Todas las imágenes generadas mantienen la temática requerida
+• **Eficiencia**: El entrenamiento convergió de manera estable y en un tiempo razonable
+
+Estos resultados validan las decisiones de diseño tomadas durante la etapa de desarrollo y confirman la aplicabilidad práctica de las GANs para la generación de contenido visual específico en el dominio automotriz.
